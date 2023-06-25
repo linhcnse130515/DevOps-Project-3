@@ -206,7 +206,8 @@ jobs:
               # If you are using kvdb.io, generate the bucket ID "8Wrp9oeqJVLd1oT2zQHzGD" in your local terminal first
               curl https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-      - destroy-environment      
+      - destroy-environment:
+          id: ${CIRCLE_WORKFLOW_ID:0:7}      
 
   # deploy-frontend:
   #   docker:

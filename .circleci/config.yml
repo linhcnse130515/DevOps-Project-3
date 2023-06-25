@@ -141,16 +141,16 @@ jobs:
               --tags project=udacity-frontend-${CIRCLE_WORKFLOW_ID:0:7} \
               --stack-name "frontend-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
               --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  
-      - run:
-          name: Add back-end ip to ansible inventory
-          command: |
-            yum install tar -y
-            yum install gzip -y 
-            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/backendip)
-            cd .circleci/ansible/
-            echo "[web]" > ./inventory.txt
-            echo ${BACKEND_IP} >> ./inventory.txt
-            cat ./inventory.txt
+      # - run:
+      #     name: Add back-end ip to ansible inventory
+      #     command: |
+      #       yum install tar -y
+      #       yum install gzip -y 
+      #       BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://api.memstash.io/values/backendip)
+      #       cd .circleci/ansible/
+      #       echo "[web]" > ./inventory.txt
+      #       echo ${BACKEND_IP} >> ./inventory.txt
+      #       cat ./inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:

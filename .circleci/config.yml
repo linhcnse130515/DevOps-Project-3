@@ -369,7 +369,6 @@ jobs:
                   aws cloudformation delete-stack --stack-name frontend-stack-${OldWorkflowID}
                 fi
             
-
 workflows:
   default:
     jobs:

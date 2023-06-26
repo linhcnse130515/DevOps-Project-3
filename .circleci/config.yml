@@ -223,6 +223,7 @@ jobs:
             curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash - 
             yum install -y nodejs
             yum install -y awscli
+            yum install -y tar
             cd ~/project/frontend
             npm install
       - run:

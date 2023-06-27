@@ -146,16 +146,16 @@ jobs:
           command: |
             yum install tar -y
             yum install gzip -y 
-      # - run:
-      #     name: Add back-end ip to ansible inventory
-      #     command: |
-      #       yum install tar -y
-      #       yum install gzip -y 
-      #       BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
-      #       cd .circleci/ansible/
-      #       echo "[web]" > ./inventory.txt
-      #       echo ${BACKEND_IP} >> ./inventory.txt
-      #       cat ./inventory.txt
+      - run:
+          name: Add back-end ip to ansible inventory
+          command: |
+            yum install tar -y
+            yum install gzip -y 
+            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
+            cd .circleci/ansible/
+            echo "[web]" > ./inventory.txt
+            echo ${BACKEND_IP} >> ./inventory.txt
+            cat ./inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:
@@ -188,7 +188,7 @@ jobs:
   run-migrations:
     docker:
       - image:
-          sleavely/node-awscli:14.x
+          circleci/node:13.8.0
     steps:
       - checkout
       - run:

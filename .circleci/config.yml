@@ -132,9 +132,9 @@ jobs:
           command: |
             aws cloudformation deploy \
               --template-file .circleci/files/backend.yml \
-              --tags project=udacity-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --tags project=udapeople \
               --stack-name "backend-stack-${CIRCLE_WORKFLOW_ID:0:7}" \
-              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"
+              --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}" 
       - run:
           name: Ensure front-end infrastructure exist
           command: |
@@ -152,7 +152,7 @@ jobs:
           name: Add back-end ip to ansible inventory
           command: |
             BACKEND_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:project,Values=udacity-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --filters "Name=tag:project,Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
             echo "$BACKEND_IP" >> ~/project/.circleci/ansible/inventory.txt
@@ -349,7 +349,7 @@ jobs:
             aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
-              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --parameter-overrides WorkflowID="udapeople-902338989534" \
               --tags project=udapeople
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7} 

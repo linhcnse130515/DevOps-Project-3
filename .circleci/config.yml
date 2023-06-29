@@ -157,13 +157,13 @@ jobs:
               --output text)
             echo "$BACKEND_IP" >> ~/project/.circleci/ansible/inventory.txt
             cat ~/project/.circleci/ansible/inventory.txt
-            # yum install tar -y
-            # yum install gzip -y 
-            # BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
-            # cd .circleci/ansible/
-            # echo "[web]" > ./inventory.txt
-            # echo ${BACKEND_IP} >> ./inventory.txt
-            # cat ./inventory.txt
+            yum install tar -y
+            yum install gzip -y 
+            BACKEND_IP=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" --request GET https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
+            cd .circleci/ansible/
+            echo "[web]" > ./inventory.txt
+            echo ${BACKEND_IP} >> ./inventory.txt
+            cat ./inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:

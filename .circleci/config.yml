@@ -223,6 +223,7 @@ jobs:
               --filters "Name=tag:project,Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
+              echo ${BACKEND_IP}
               curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'backendip=${BACKEND_IP}'
             fi
       - destroy-environment:

@@ -211,7 +211,6 @@ jobs:
             cd ~/project/backend
             npm install
             npm run migrations > migrations_test.txt
-            yum install -y awscli
       - run:
           name: Send migration results to kvdb
           command: |

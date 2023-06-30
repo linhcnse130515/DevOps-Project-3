@@ -151,15 +151,15 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            # BACKEND_IP=$(aws ec2 describe-instances \
-            #   --filters "Name=tag:project,Values=udapeople" \
-            #   --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #   --output text)
+            BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project,Values=udapeople" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
             # echo "$BACKEND_IP" >> ~/project/.circleci/ansible/inventory.txt
             # cat ~/project/.circleci/ansible/inventory.txt
             yum install tar -y
             yum install gzip -y 
-            BACKEND_IP=$(curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
+            # BACKEND_IP=$(curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
             cd .circleci/ansible/
             echo "[web]" > ./inventory.txt
             echo ${BACKEND_IP} >> ./inventory.txt
@@ -207,6 +207,7 @@ jobs:
             cd ~/project/backend
             npm install
             npm run migrations > migrations_test.txt
+            pip install awscli
       - run:
           name: Send migration results to kvdb
           command: |
@@ -215,7 +216,11 @@ jobs:
               # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the  website
               # curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
               # If you are using kvdb.io, generate the bucket ID "8Wrp9oeqJVLd1oT2zQHzGD" in your local terminal first
-              curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project,Values=udapeople" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+              curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'backendip=${BACKEND_IP}'
             fi
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}      

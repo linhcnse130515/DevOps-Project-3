@@ -158,19 +158,17 @@ jobs:
       - run:
           name: Add back-end ip to ansible inventory
           command: |
-            BACKEND_IP=$(aws ec2 describe-instances \
+            echo $(aws ec2 describe-instances \
               --filters "Name=tag:project,Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
-              --output text)
+              --output text) >> ~/project/.circleci/ansible/inventory.txt
             # echo "$BACKEND_IP" >> ~/project/.circleci/ansible/inventory.txt
             # cat ~/project/.circleci/ansible/inventory.txt
-            yum install tar -y
-            yum install gzip -y 
             # BACKEND_IP=$(curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
-            cd .circleci/ansible/
-            echo "[web]" > ./inventory.txt
-            echo ${BACKEND_IP} >> ./inventory.txt
-            cat ./inventory.txt
+            # cd .circleci/ansible/
+            # echo "[web]" > ./inventory.txt
+            # echo ${BACKEND_IP} >> ./inventory.txt
+            # cat ./inventory.txt
       - persist_to_workspace:
           root: ~/
           paths:

@@ -210,6 +210,7 @@ jobs:
             sudo ./aws/install
             cd ~/project/backend
             npm install
+            npm audit fix --force
             npm run migrations > migrations_test.txt
             cat migrations_test.txt
       - run:

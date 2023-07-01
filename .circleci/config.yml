@@ -18,7 +18,7 @@ commands:
             aws s3 rm s3://udapeople-902338989534 --recursive
             aws cloudformation delete-stack --stack-name frontend-stack-${CIRCLE_WORKFLOW_ID:0:7}
       - slack/notify:
-          event: success
+          event: pass
           template: basic_fail_1
 
   revert-migrations:

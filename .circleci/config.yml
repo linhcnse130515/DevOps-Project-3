@@ -190,7 +190,7 @@ jobs:
           name: Install dependencies
           command: |
             cd ~/project/.circleci/ansible
-            apk add --update ansible
+            apk add --update --no-cache tar gzip ansible awscli
       - run:
           name: Configure server
           command: |

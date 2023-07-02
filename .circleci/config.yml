@@ -349,11 +349,16 @@ jobs:
             export OldWorkflowID=$(aws cloudformation list-exports \
             --query "Exports[?Name==\`WorkflowID\`].Value" \
             --no-paginate --output text)
+            # aws cloudformation deploy \
+            # --template-file .circleci/files/cloudfront.yml \
+            # --stack-name InitialStack \
+            # --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
+            # --tags project=udapeople
             aws cloudformation deploy \
-            --template-file .circleci/files/cloudfront.yml \
-            --stack-name InitialStack \
-            --parameter-overrides WorkflowID=${CIRCLE_WORKFLOW_ID:0:7} \
-            --tags project=udapeople
+              --template-file .circleci/files/cloudfront.yml \
+              --stack-name InitialStack \
+              --parameter-overrides WorkflowID="udapeople-${CIRCLE_WORKFLOW_ID:0:7}" \
+              --tags project=udapeople
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7} 
       - revert-migrations:
@@ -408,7 +413,7 @@ workflows:
           requires: [run-migrations]
       - smoke-test:
           requires: [deploy-backend, deploy-frontend]
-      - cloudfront-update:
-          requires: [smoke-test]
-      - cleanup:
-          requires: [cloudfront-update]
+      # - cloudfront-update:
+      #     requires: [smoke-test]
+      # - cleanup:
+      #     requires: [cloudfront-update]

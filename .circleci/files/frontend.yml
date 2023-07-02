@@ -10,9 +10,8 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "udapeople-902338989534"
-      PublicAccessBlockConfiguration:
-        BlockPublicPolicy: false
+      BucketName: !Sub "udapeople-${ID}"
+      AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: 404.html

@@ -198,32 +198,25 @@ jobs:
 
   run-migrations:
     docker:
-      - image: python:3.7-alpine3.16
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - run:
           name: Install dependencies
           command: |
             # apk add --update --no-cache tar gzip nodejs npm aws-cli curl
-            pip install -y tar gzip curl
+            sudo apt install -y tar gzip curl
             curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            unzip awscliv2.zip
-            pip ./aws/install
+            unzip -qq awscliv2.zip
+            sudo ./aws/install
       - restore_cache:
           keys: [backend-build]
       - run:
           name: Run migrations
           command: |
-            # sudo apt-get update && sudo apt-get install -yy less
-            # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-            # unzip awscliv2.zip
-            # sudo ./aws/install
             cd ~/project/backend
             npm install
             npm run build
-            # npm audit fix --audit-level=critical --force
-            # npm audit fix --audit-level=critical --force
-            # npm audit --audit-level=critical
             npm run migrations >> migrations.txt
             cat migrations.txt
       - run:
@@ -231,9 +224,6 @@ jobs:
           command: |
             if grep -q "success" ~/project/backend/migrations.txt
             then
-              # If you are using memstash.io, generate the token "7933fe63-4687-4fa1-8426-aa25aa1730ec" on the  website
-              # curl -H "Content-Type: text/plain" -H "token: 7933fe63-4687-4fa1-8426-aa25aa1730ec" --request PUT --data "1" https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}
-              # If you are using kvdb.io, generate the bucket ID "8Wrp9oeqJVLd1oT2zQHzGD" in your local terminal first
               BACKEND_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:project,Values=udapeople" \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -253,14 +243,6 @@ jobs:
           name: Install dependencies
           command: |
             apk add --update --no-cache tar gzip nodejs npm aws-cli
-            # yum install -y gcc-c++ make
-            # yum install sudo -y
-            # curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash - 
-            # yum install -y nodejs
-            # yum install -y awscli
-            # yum install -y tar
-            # cd ~/project/frontend
-            # npm install
       - run:
           name: Get backend url
           command: |
@@ -282,7 +264,8 @@ jobs:
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-902338989534 --recursive
       - destroy-environment:
-          id: ${CIRCLE_WORKFLOW_ID:0:7}    
+          id: ${CIRCLE_WORKFLOW_ID:0:7} 
+      - revert-migrations    
                     
   deploy-backend:
     docker:

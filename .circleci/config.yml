@@ -183,7 +183,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["0f:c0:e0:05:4c:28:23:5f:82:a7:49:b7:d2:b7:3b:cf"]
+          fingerprints: ["ec:ee:03:33:13:fc:ea:71:6d:29:46:13:dd:2a:42:36"]
       - attach_workspace:
           at: ~/
       - run:
@@ -220,7 +220,7 @@ jobs:
             cd ~/project/backend
             npm install
             npm run build
-            # npm audit fix --force
+            npm audit fix --audit-level=critical --force
             npm run migrations >> migrations.txt
             cat migrations.txt
       - run:
@@ -249,22 +249,23 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yum install -y gcc-c++ make
-            yum install sudo -y
-            curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash - 
-            yum install -y nodejs
-            yum install -y awscli
-            yum install -y tar
-            cd ~/project/frontend
-            npm install
+            apk add --update --no-cache tar gzip nodejs npm aws-cli
+            # yum install -y gcc-c++ make
+            # yum install sudo -y
+            # curl -sL https://rpm.nodesource.com/setup_13.x | sudo -E bash - 
+            # yum install -y nodejs
+            # yum install -y awscli
+            # yum install -y tar
+            # cd ~/project/frontend
+            # npm install
       - run:
           name: Get backend url
           command: |
-            # BACKEND_IP=$(aws ec2 describe-instances \
-            #     --filters "Name=tag:project,Values=udapeople" \
-            #     --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            #     --output text)
-            BACKEND_IP=$(curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
+            BACKEND_IP=$(aws ec2 describe-instances \
+              --filters "Name=tag:project,Values=udapeople" \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --output text)
+            # BACKEND_IP=$(curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/backendip)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
@@ -282,30 +283,34 @@ jobs:
                     
   deploy-backend:
     docker:
-      - image: python:3.7-alpine3.11
+      - image: python:3.7-alpine3.16
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["0f:c0:e0:05:4c:28:23:5f:82:a7:49:b7:d2:b7:3b:cf"]
+          fingerprints: ["ec:ee:03:33:13:fc:ea:71:6d:29:46:13:dd:2a:42:36"]
       - attach_workspace:
           at: ~/
       - run:
           name: Install dependencies
           command: |
-            apk add --update ansible nodejs npm rsync openssh
-            pip install awscli
+            apk add --update --no-cache tar gzip nodejs npm aws-cli ansible
+            # apk add --update ansible nodejs npm rsync openssh
+            # pip install awscli
+      - restore_cache:
+          keys: [backend-build]
       - run:
           name: Deploy backend
           command: |
             cd backend
-            npm i
+            npm install
             npm run build
             cd ..
             ## Zip the directory
             tar -C backend -czvf artifact.tar.gz .
+            mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
+            mv antifact.tar.gz .circleci/ansible/roles/deploy/files/antifact.tar.gz
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
+            echo "Contents  of the inventory.txt file is -------${cat -1 inventory.txt}"
             ansible-playbook -i inventory.txt deploy-backend.yml
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7} 

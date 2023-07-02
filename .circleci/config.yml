@@ -28,13 +28,10 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl --insecure  https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7})
-            if(( $SUCCESS==1 )); 
-            then
-              cd ~/project/backend
-              npm install
-              npm run migrations:revert
-            fi
+            cd ~/project/backend
+            npm install
+            npm run build
+            npm run migrations:revert
             
 jobs:
   build-frontend:
@@ -238,7 +235,7 @@ jobs:
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --output text)
               echo ${BACKEND_IP}
-              curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d 'backendip=${BACKEND_IP}'
+              curl --insecure https://kvdb.io/8Wrp9oeqJVLd1oT2zQHzGD/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
           id: ${CIRCLE_WORKFLOW_ID:0:7}      
@@ -310,7 +307,7 @@ jobs:
             ## Zip the directory
             tar -C backend -czvf artifact.tar.gz .
             mkdir -p ~/project/.circleci/ansible/roles/deploy/files/
-            mv antifact.tar.gz .circleci/ansible/roles/deploy/files/antifact.tar.gz
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------${cat -1 inventory.txt}"
             ansible-playbook -i inventory.txt deploy-backend.yml

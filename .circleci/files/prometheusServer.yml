@@ -1,5 +1,5 @@
 Description: |
-  This template deploys prometheus in the VPC vpc-0492b2b84bd1a3194 (us-west-1)
+  This template deploys prometheus in the VPC vpc-017abb55cf8f36032 (us-east-1)
   To execute please run this:
   aws cloudformation deploy --stack-name prometheus --template-file ${ThisFile.yml} --capabilities CAPABILITY_IAM \
   --parameter-overrides AuthEmail=${YourGmailAddress} EmailPassword=${YourGmailPassword} FromEmail=${YourEmail} ToEmail=${AnyEmailDestination} \
@@ -8,15 +8,15 @@ Parameters:
   VPC:
     Description: Deploy the instance in this VPC
     Type: String
-    Default: vpc-0492b2b84bd1a3194
+    Default: vpc-017abb55cf8f36032
   Subnet:
     Description: This subnet must already exist
     Type: String
-    Default: subnet-06241d056512881e6
+    Default: subnet-01403200373f4f5ca
   AZ:
     Description: Choose an AZ that corresponds to the Subnet in the !Subnet section
     Type: String
-    Default: us-west-2a
+    Default: us-east-1a
   KeyPair:
     Description: |
       Set a keypair you will use to connect to the instance
@@ -28,10 +28,10 @@ Parameters:
     Default: udacity
   Image:
     Description: |
-      The ID of the AMI (e.g. ami-0ee8244746ec5d6d4 for Ubuntu 20 deployed in us-west-2 )
+      The ID of the AMI (e.g. ami-053b0d53c279acc90 for Ubuntu 20 deployed in us-west-2 )
       ami-0cfa91bdbc3be780c for Ubuntu 18 in us-west-2
     Type: String
-    Default: ami-0cfa91bdbc3be780c # ami-0ee8244746ec5d6d4
+    Default: ami-053b0d53c279acc90 # ami-053b0d53c279acc90
   LocalIPAddress:
     Description: This is your local IP address, it will be used to configure security group ingress
     Type: String

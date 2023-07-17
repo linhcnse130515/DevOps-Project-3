@@ -10,7 +10,7 @@ Resources:
   WebsiteBucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: "udapeople-902338989534"
+      BucketName: !Sub "udapeople-${ID}"
       PublicAccessBlockConfiguration:
         BlockPublicPolicy: false
       WebsiteConfiguration:
